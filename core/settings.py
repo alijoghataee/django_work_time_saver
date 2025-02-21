@@ -61,6 +61,7 @@ BASE_APPS = [
 
 PROJECT_APPS = [
     'accounts',
+    'work_times',
 ]
 
 THIRD_PARTY_APPS = [
