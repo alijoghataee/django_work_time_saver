@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Work Time</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+            background-color: #4CAF50;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            font-size: 1rem;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 1rem;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h2>Work Time Calculation for {{ date }}</h2>
+
+        {% if results %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Total Minutes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project_name, project_data in results.items %}
+                        <tr>
+                            <td style="background-color: {{ project_data.hex_color }}; padding: 10px;">
+                                <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                    {{ project_name }}
+                                </div>
+                            </td>
+                            <td style="background-color: {{ project_data.hex_color }}; padding: 10px;">
+                                <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                    {{ project_data.minutes }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="error">
+                <p>No work times found for this date.</p>
+            </div>
+        {% endif %}
+
+        <a href="{% url 'work_time_list' %}" class="back-button">Back to Work Times List</a>
+    </div>
+
+</body>
+</html>

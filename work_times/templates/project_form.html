@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Create/Update Project{% endblock %}</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button.save {
+            background-color: goldenrod;
+        }
+
+        .button.save:hover {
+            background-color: #e6a800;
+        }
+
+        .button.cancel {
+            background-color: red;
+        }
+
+        .button.cancel:hover {
+            background-color: #cc0000;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        /* Customizing the color input field to show preview and no extra box */
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 5px;
+            padding: 0;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: transparent;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]:focus {
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 15px;
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="{{ form.name.id_for_label }}">Project Name:</label>
+            {{ form.name }}
+
+            <label for="{{ form.hex_color.id_for_label }}">Project Color:</label>
+            <div class="color-picker-container">
+                {{ form.hex_color }} <!-- Color input field integrated with color preview -->
+            </div>
+
+            <button type="submit" class="button save">Save Changes</button>
+        </form>
+
+        <a href="{% url 'project_list' %}" class="button cancel">Cancel</a>
+    </div>
+
+</body>
+</html>

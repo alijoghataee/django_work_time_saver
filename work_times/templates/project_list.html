@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .project-list {
+            list-style: none;
+            padding: 0;
+        }
+        .project-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #000;
+            margin-right: 10px;
+        }
+        .actions {
+            margin-left: auto;
+        }
+        .actions a {
+            margin-left: 10px;
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid #007bff;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .actions a.delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .actions a.work-times {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Project List</h2>
+
+    <a href="{% url 'create_project' %}" style="display: inline-block; margin-bottom: 15px; padding: 8px 15px; background-color: green; color: white; text-decoration: none; border-radius: 5px;">Create New Project</a>
+    <a href="{% url 'work_time_list' %}" style="display: inline-block; margin-bottom: 15px; padding: 8px 15px; background-color: goldenrod; color: white; text-decoration: none; border-radius: 5px;">Work Time List</a>
+
+    <ul class="project-list">
+        {% for project in projects %}
+            <li class="project-item">
+                <span class="color-box" style="background-color: {{ project.hex_color }};"></span>
+                <strong>{{ project.name }}</strong>
+                <div class="actions">
+                    <a href="{% url 'update_project' project.pk %}">Edit</a>
+                    <a href="{% url 'delete_project' project.pk %}" class="delete">Delete</a>
+                    <a href="{% url 'work_time_list_by_project' project.pk %}" class="work-times">View Work Times</a>
+                </div>
+            </li>
+        {% empty %}
+            <p>No projects found.</p>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

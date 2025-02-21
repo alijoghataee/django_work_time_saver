@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Times</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button.create {
+            background-color: goldenrod;
+        }
+
+        .button.create:hover {
+            background-color: #e6a800;
+        }
+
+        .button.project {
+            background-color: green;
+        }
+
+        .button.project:hover {
+            background-color: #4CAF50;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-container select {
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .filter-container button {
+            padding: 8px 16px;
+            font-size: 1rem;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-container button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        td a {
+            text-decoration: none;
+            color: #007BFF;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        td a:hover {
+            color: #0056b3;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-links a {
+            padding: 6px 12px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+        }
+
+        .action-links a:hover {
+            background-color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.9rem;
+            }
+
+            .button {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Work Times</h2>
+
+    <!-- Filter Section -->
+    <div class="filter-container">
+        <form method="GET">
+            <label for="project" style="font-weight: bold;">Filter by Project:</label>
+            <select name="project" id="project">
+                <option value="">All Projects</option>
+                {% for project in projects %}
+                    <option value="{{ project.id }}" {% if request.GET.project == project.id|stringformat:"s" %}selected{% endif %}>
+                        {{ project.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-container">
+        <a href="{% url 'work_time_create' %}" class="button create">Create Work Time</a>
+        <a href="{% url 'project_list' %}" class="button project">Project List</a>
+    </div>
+
+     <!-- Work Times Grouped by Start Date -->
+ {% for start_date, work_times in grouped_work_times.items %}
+        <tr>
+            <td>{{ start_date }}</td>
+            <td>
+                <!-- Button to calculate work time for this date -->
+                <a href="{% url 'calculate_work_time' start_date %}" class="button", style="background-color: black">Calculate Work Time</a>
+            </td>
+        </tr>
+        <table>
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Description</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Worked Minutes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for work_time in work_times %}
+                    <tr>
+                        <td style="background-color: {{ work_time.project.hex_color }}; padding: 10px;">
+                            <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                {{ work_time.project.name }}
+                            </div>
+                        </td>
+                        <td style="background-color: {{ work_time.project.hex_color }}; padding: 10px;">
+                            <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                {{ work_time.description }}
+                            </div>
+                        </td>
+                        <td style="background-color: {{ work_time.project.hex_color }}; padding: 10px;">
+                            <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                {{ work_time.start_time }}
+                            </div>
+                        </td>
+                        <td style="background-color: {{ work_time.project.hex_color }}; padding: 10px;">
+                            <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                {{ work_time.end_time }}
+                            </div>
+                        </td>
+                        <td style="background-color: {{ work_time.project.hex_color }}; padding: 10px;">
+                            <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                {{ work_time.worked_minutes }}
+                            </div>
+                        </td>
+                        <td class="action-links">
+                            <a href="{% url 'update_work_time' work_time.pk %}" class="button" style="background-color: #007BFF">Edit</a>
+                            <a href="{% url 'delete_work_time' work_time.pk %}" class="button" style="background-color: red;">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+</body>
+</html>

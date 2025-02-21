@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Time Form</title>
+    <style>
+        /* Your custom styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+                .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button.cancel {
+            background-color: red;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .time-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .time-group input {
+            width: calc(100% - 130px); /* Adjust width to fit the button */
+        }
+
+        .time-group button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .time-group button:hover {
+            background-color: #45a049;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>{% block title %}Create/Update Work Time{% endblock %}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_project">Project</label>
+                {{ form.project }} <!-- Render project field -->
+            </div>
+
+            <div class="form-group">
+                <label for="id_description">Description</label>
+                {{ form.description }} <!-- Render description field -->
+            </div>
+
+            <!-- Start Time Field with "Now" Button -->
+            <div class="time-group">
+                <label for="id_start_time">Start Time</label>
+                {{ form.start_time }} <!-- Render start time field -->
+                <button type="button" onclick="setNow('id_start_time')">Set Start Time to Now</button>
+            </div>
+
+            <!-- End Time Field with "Now" Button -->
+            <div class="time-group">
+                <label for="id_end_time">End Time</label>
+                {{ form.end_time }} <!-- Render end time field -->
+                <button type="button" onclick="setNow('id_end_time')">Set End Time to Now</button>
+            </div>
+
+            <button type="submit">Save Work Time</button>
+        </form>
+        <a href="{% url 'work_time_list' %}" class="button cancel">Cancel</a>
+    </div>
+
+    <script>
+        function setNow(fieldId) {
+            // Get the current time
+            const now = new Date();
+            const formattedTime = now.toISOString().slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
+
+            // Set the current time in the given field
+            document.getElementById(fieldId).value = formattedTime;
+        }
+    </script>
+
+</body>
+</html>

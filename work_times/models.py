@@ -16,6 +16,7 @@ class WorkTime(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
     worked_minutes = models.IntegerField(blank=True, null=True)
 
-    def calculate_work_time(self):
-        self.worked_minutes = (self.end_time - self.start_time).total_seconds() / 60
-        self.save()
+    def save(self):
+        if self.end_time:
+            self.worked_minutes = (self.end_time - self.start_time).total_seconds() / 60
+        super().save()
