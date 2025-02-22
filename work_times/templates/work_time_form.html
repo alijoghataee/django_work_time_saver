@@ -134,16 +134,40 @@
         <a href="{% url 'work_time_list' %}" class="button cancel">Cancel</a>
     </div>
 
-    <script>
-        function setNow(fieldId) {
-            // Get the current time
-            const now = new Date();
-            const formattedTime = now.toISOString().slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
+<script>
+    function setNow(fieldId, timeZone = 'Asia/Tehran') {
+        // Get the current time
+        const now = new Date();
 
-            // Set the current time in the given field
-            document.getElementById(fieldId).value = formattedTime;
-        }
-    </script>
+        // Convert to the desired timezone using Intl.DateTimeFormat
+        const options = {
+            timeZone: timeZone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+
+        // Format the date components
+        const formatter = new Intl.DateTimeFormat('en-CA', options);
+        const parts = formatter.formatToParts(now);
+
+        // Extract date components
+        const year = parts.find(p => p.type === "year").value;
+        const month = parts.find(p => p.type === "month").value;
+        const day = parts.find(p => p.type === "day").value;
+        const hour = parts.find(p => p.type === "hour").value;
+        const minute = parts.find(p => p.type === "minute").value;
+
+        // Format to 'YYYY-MM-DDTHH:MM' (suitable for <input type="datetime-local">)
+        const formattedTime = `${year}-${month}-${day}T${hour}:${minute}`;
+
+        // Set the value in the input field
+        document.getElementById(fieldId).value = formattedTime;
+    }
+</script>
 
 </body>
 </html>
