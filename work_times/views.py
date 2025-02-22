@@ -81,10 +81,10 @@ class WorkTimeUpdateView(UpdateView):
 
 class WorkTimeDeleteView(DeleteView):
     model = WorkTime
-    template_name = 'work_time_confirm_delete.html'
+    template_name = 'delete_work_time.html'
 
     def get_success_url(self):
-        return reverse_lazy('work_time_list', kwargs={'pk': self.object.project.pk})
+        return reverse_lazy('work_time_list')
 
 
 class CalculateWorkTime(View):
