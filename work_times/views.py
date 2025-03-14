@@ -120,14 +120,17 @@ class CalculateWorkTime(LoginRequiredMixin, View):
             for work_time in work_times:
                 project_name = work_time.project.name
                 project_hex_color = work_time.project.hex_color
+                project_description = work_time.description
 
                 if project_name not in results:
                     results[project_name] = {
                         'hex_color': project_hex_color,
-                        'minutes': 0
+                        'minutes': 0,
+                        'description': project_description
                     }
 
                 results[project_name]['minutes'] += work_time.worked_minutes
+                results[project_name]['description'] = f'{work_time.description} - {results[project_name]["description"]}'
 
         except TypeError:
             return render(request, self.template_name, {'results': None, 'date': date, 'error': True})

@@ -76,7 +76,8 @@
         }
 
         .back-button {
-            margin-top: 20px;
+            display: inline-block;
+            margin-top: 30px;
             text-decoration: none;
             font-size: 1rem;
             color: white;
@@ -114,9 +115,15 @@
                             </td>
                             <td style="background-color: {{ project_data.hex_color }}; padding: 10px;">
                                 <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
+                                    {{ project_data.description }}
+                                </div>
+                            </td>
+                            <td style="background-color: {{ project_data.hex_color }}; padding: 10px;">
+                                <div style="background-color: white; padding: 5px 10px; border-radius: 5px;">
                                     {{ project_data.minutes }}
                                 </div>
                             </td>
+
                         </tr>
                     {% endfor %}
                 </tbody>
