@@ -4,6 +4,7 @@ from collections import defaultdict
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, View
 
 from work_times.forms import ProjectForm, WorkTimeForm
@@ -81,6 +82,12 @@ class WorkTimeCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('work_time_list')
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class WorkTimeUpdateView(LoginRequiredMixin, UpdateView):
