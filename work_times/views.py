@@ -1,5 +1,7 @@
 import datetime
 from collections import defaultdict
+
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, View
@@ -9,11 +11,14 @@ from work_times.models import Project, WorkTime
 
 
 # project views
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'project_form.html'
     success_url = reverse_lazy('project_list')
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 class ProjectListView(ListView):
@@ -22,27 +27,32 @@ class ProjectListView(ListView):
     context_object_name = "projects"
 
 
-class ProjectUpdateView(UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = "project_form.html"
     success_url = reverse_lazy('project_list')
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class ProjectDeleteView(DeleteView):
+
+class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Project
     template_name = "delete_project.html"
     success_url = reverse_lazy('project_list')
 
+    def test_func(self):
+        return self.request.user.is_staff
 
 # work time views
-class WorkTimeListView(ListView):
+class WorkTimeListView(LoginRequiredMixin, ListView):
     model = WorkTime
     template_name = "work_time_list.html"
     context_object_name = "work_times"
 
     def get_queryset(self):
-        queryset = WorkTime.objects.all().order_by('-start_time')
+        queryset = WorkTime.objects.filter(user=self.request.user).order_by('-start_time')
         project_id = self.request.GET.get('project')  # Optional project filter
         if project_id:
             queryset = queryset.filter(project_id=project_id)
@@ -61,39 +71,48 @@ class WorkTimeListView(ListView):
         return context
 
 
-class WorkTimeCreateView(CreateView):
+class WorkTimeCreateView(LoginRequiredMixin, CreateView):
     model = WorkTime
     form_class = WorkTimeForm
     template_name = 'work_time_form.html'
+
+    def get_queryset(self):
+        return WorkTime.objects.filter(user=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy('work_time_list')
 
 
-class WorkTimeUpdateView(UpdateView):
+class WorkTimeUpdateView(LoginRequiredMixin, UpdateView):
     model = WorkTime
     form_class = WorkTimeForm
     template_name = 'work_time_form.html'
+
+    def get_queryset(self):
+        return WorkTime.objects.filter(user=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy('work_time_list')
 
 
-class WorkTimeDeleteView(DeleteView):
+class WorkTimeDeleteView(LoginRequiredMixin, DeleteView):
     model = WorkTime
     template_name = 'delete_work_time.html'
 
+    def get_queryset(self):
+        return WorkTime.objects.filter(user=self.request.user)
+
     def get_success_url(self):
         return reverse_lazy('work_time_list')
 
 
-class CalculateWorkTime(View):
+class CalculateWorkTime(LoginRequiredMixin, View):
     template_name = 'calculate_work_time.html'
 
     def get(self, request, date):
         date_obj = datetime.datetime.strptime(date, '%Y-%m-%d').date()
 
-        work_times = WorkTime.objects.filter(start_time__date=date_obj)
+        work_times = WorkTime.objects.filter(user=self.request.user, start_time__date=date_obj)
 
         try:
             results = {}

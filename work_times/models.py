@@ -1,5 +1,7 @@
 from django.db import models
 
+from accounts.models import User
+
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
@@ -10,6 +12,7 @@ class Project(models.Model):
 
 
 class WorkTime(models.Model):
+    user = models.ForeignKey(User, related_name='work_times', on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='work_times', on_delete=models.CASCADE)
     description = models.TextField()
     start_time = models.DateTimeField()
