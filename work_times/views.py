@@ -133,11 +133,11 @@ class CalculateWorkTime(LoginRequiredMixin, View):
                     results[project_name] = {
                         'hex_color': project_hex_color,
                         'minutes': 0,
-                        'description': project_description
+                        'description': ''
                     }
 
                 results[project_name]['minutes'] += work_time.worked_minutes
-                results[project_name]['description'] = f'{work_time.description} - {results[project_name]["description"]}'
+                results[project_name]['description'] = f'{project_description} - {results[project_name]["description"]}'
 
         except TypeError:
             return render(request, self.template_name, {'results': None, 'date': date, 'error': True})
