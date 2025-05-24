@@ -54,9 +54,40 @@ class WorkTimeListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = WorkTime.objects.filter(user=self.request.user).order_by('-start_time')
-        project_id = self.request.GET.get('project')  # Optional project filter
+
+        # Optional project filter
+        project_id = self.request.GET.get('project')
         if project_id:
             queryset = queryset.filter(project_id=project_id)
+
+        # Optional date range filter
+        start_date_str = self.request.GET.get('start')
+        end_date_str = self.request.GET.get('end')
+
+        if not start_date_str and not end_date_str:
+            # Default to today if both are missing
+            today = datetime.date.today()
+            start_datetime = datetime.datetime.combine(today, datetime.time.min)
+            end_datetime = datetime.datetime.combine(today, datetime.time.max)
+            queryset = queryset.filter(start_time__range=(start_datetime, end_datetime))
+        else:
+            # Filter by given range, if any
+            if start_date_str:
+                try:
+                    start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
+                    start_datetime = datetime.datetime.combine(start_date, datetime.time.min)
+                    queryset = queryset.filter(start_time__gte=start_datetime)
+                except ValueError:
+                    pass
+
+            if end_date_str:
+                try:
+                    end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
+                    end_datetime = datetime.datetime.combine(end_date, datetime.time.max)
+                    queryset = queryset.filter(start_time__lte=end_datetime)
+                except ValueError:
+                    pass
+
         return queryset
 
     def get_context_data(self, **kwargs):

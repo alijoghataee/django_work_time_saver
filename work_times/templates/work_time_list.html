@@ -147,20 +147,26 @@
     <h2>Work Times</h2>
 
     <!-- Filter Section -->
-    <div class="filter-container">
-        <form method="GET">
-            <label for="project" style="font-weight: bold;">Filter by Project:</label>
-            <select name="project" id="project">
-                <option value="">All Projects</option>
-                {% for project in projects %}
-                    <option value="{{ project.id }}" {% if request.GET.project == project.id|stringformat:"s" %}selected{% endif %}>
-                        {{ project.name }}
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit">Apply Filter</button>
-        </form>
-    </div>
+<!-- Filter Section -->
+<div class="filter-container">
+    <form method="GET">
+        <label for="project" style="font-weight: bold;">Filter by Project:</label>
+        <select name="project" id="project">
+            <option value="">All Projects</option>
+            {% for project in projects %}
+                <option value="{{ project.id }}" {% if request.GET.project == project.id|stringformat:"s" %}selected{% endif %}>
+                    {{ project.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+            <input type="date" name="start" id="start" value="{{ default_start }}">
+            <input type="date" name="end" id="end" value="{{ default_end }}">
+
+        <button type="submit">Apply Filter</button>
+    </form>
+</div>
+
 
     <!-- Buttons -->
     <div class="button-container">
